@@ -29,5 +29,5 @@ public class SocialMediaController {
         context.json("sample text");
     }
 
-
+    
 }
