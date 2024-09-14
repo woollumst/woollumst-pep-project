@@ -75,8 +75,9 @@ public class SocialMediaController {
         });
 
         app.get("/messages/{message_id}", ctx -> { //get message by ID
-            int temp = Integer.valueOf(ctx.pathParam("message_id"));
-            ctx.json(messageService.getMessageByID(temp));
+            String temp = ctx.pathParam("message_id");
+            int newNum = Integer.parseInt(temp);
+            ctx.json(messageService.getMessageByID(newNum));
             ctx.status(200);
         });
 
