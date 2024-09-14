@@ -51,17 +51,17 @@ public class MessageDAO {
     // retrieve message by message ID 
     public Message getMessageByID(int messID){
         Connection connection = ConnectionUtil.getConnection();
+        Message message = null;
         try{
             String sql = "SELECT * FROM Message WHERE message_id=?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, messID);
             ResultSet rs = preparedStatement.executeQuery();
-            Message message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
-            return message;
+            message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch")); //FINISH THIS LINE
         } catch(SQLException e){
             System.out.println(e.getMessage());
         }
-        return null;
+        return message;
     }
 
     // Delete message by message ID
