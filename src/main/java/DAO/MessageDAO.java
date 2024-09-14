@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.azul.crs.client.Result;
+//import com.azul.crs.client.Result;
 
 public class MessageDAO {
     // create new message 

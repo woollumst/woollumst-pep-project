@@ -9,14 +9,72 @@ import java.util.List;
 
 public class AccountDAO {
     //register
-    public void registerAccount (String username, String password) {
-
+    public Account registerAccount (Account account) {
+        Connection connection = ConnectionUtil.getConnection();
+        try{
+            String sql = "INSERT INTO Account (username, password) VALUES (?, ?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, account.getUsername());
+            preparedStatement.setString(2, account.getPassword());
+            ResultSet rs = preparedStatement.executeQuery();
+            account.setAccount_id(rs.getInt("account_id"));
+            return account;
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     //user logins
-    public void accountLogin (String username, String password){
+    public Account accountLogin (Account account){
+        Connection connection = ConnectionUtil.getConnection();
+        try{
+            String sql = "SELECT * FROM Account WHERE username = ?, password = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, account.getUsername());
+            preparedStatement.setString(2, account.getPassword());
+            ResultSet rs = preparedStatement.executeQuery();
+            account.setAccount_id(rs.getInt("account_id"));
+            return account;
 
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
+    public List<String> getAllUsernames (){
+        Connection connection = ConnectionUtil.getConnection();
+        List<String> usernameList = new ArrayList<>();
+        try{
+            String sql = "SELECT username FROM Account;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                usernameList.add(rs.getString("username"));
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return usernameList;
+    }
+        
+        
+    public List<Account> getAllAccounts (){
+        Connection connection = ConnectionUtil.getConnection();
+        List<Account> accounts = new ArrayList<>();
+        try{
+            String sql = "SELECT * FROM Account;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                Account account = new Account(rs.getInt("account_id"), rs.getString("username"), rs.getString("password"));
+                accounts.add(account);
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return accounts;
+    }
     
 }

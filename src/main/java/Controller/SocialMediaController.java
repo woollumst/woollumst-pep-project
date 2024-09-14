@@ -2,6 +2,9 @@ package Controller;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import Service.*;
+import Model.*;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -16,6 +19,61 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
+        ObjectMapper om = new ObjectMapper();
+        AccountService accountService = new AccountService();
+        MessageService messageService = new MessageService();
+
+        app.post("/register", ctx -> { //register account
+            String temp = ctx.body();
+            Account tempAcc = om.readValue(temp, Account.class);
+            tempAcc = accountService.registerAccount(tempAcc);
+            if (tempAcc == null){
+                ctx.status(400);
+            }else{
+            ctx.json(tempAcc);
+            ctx.status(200);
+            }
+        });
+
+        app.post("/login", ctx -> { //login to account
+            String temp = ctx.body();
+            Account tempAcc = om.readValue(temp, Account.class);
+            tempAcc = accountService.accountLogin(tempAcc);
+            if (tempAcc == null){
+                ctx.status(401);
+            } else{
+                ctx.json(tempAcc);
+                ctx.status(200);
+            }
+        });
+
+        app.post("/messages", ctx -> { //create a new message
+
+        });
+
+        app.get("/messages", ctx -> { //get all messages
+            ctx.json(messageService.getAllMessages());
+            ctx.status(200);
+        });
+
+        app.get("/messages/{message_id}", ctx -> { //get message by ID
+            int temp = Integer.valueOf(ctx.pathParam("message_id"));
+            ctx.json(messageService.getMessageByID(temp));
+            ctx.status(200);
+        });
+
+        app.delete("/messages/{message_id}", ctx -> { //delete message by ID
+
+        });
+
+        app.patch("/messages/{message_id}", ctx -> { //update message by message ID
+
+        });
+
+        app.get("/accounts/{account_id}/messages", ctx -> { //get messages by particular user
+
+        });
+
         app.get("example-endpoint", this::exampleHandler);
 
         return app;
