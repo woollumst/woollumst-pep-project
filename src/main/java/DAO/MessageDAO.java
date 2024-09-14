@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MessageDAO {
     // create new message 
-    public Message createNewMessage(Message message){
+    public boolean createNewMessage(Message message){
         Connection connection = ConnectionUtil.getConnection();
         try{
             String sql = "INSERT INTO Message (posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?);";
@@ -22,13 +22,11 @@ public class MessageDAO {
             preparedStatement.setString(2, message.getMessage_text());
             preparedStatement.setLong(3, message.getTime_posted_epoch());
 
-            ResultSet rs = preparedStatement.executeQuery();
-            Message finMessage = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
-            return finMessage;
+            return preparedStatement.execute();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return null;
+        return false;
     }
 
     // retrieve all messages 

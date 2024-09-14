@@ -16,7 +16,12 @@ public class AccountDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
-            ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.execute();
+
+            String sql2 = "SELECT * FROM Account WHERE username = ?;";
+            PreparedStatement p2 = connection.prepareStatement(sql2);
+            p2.setString(1, account.getUsername());
+            ResultSet rs = p2.executeQuery();
             account.setAccount_id(rs.getInt("account_id"));
             return account;
         }catch(SQLException e){
@@ -29,7 +34,7 @@ public class AccountDAO {
     public Account accountLogin (Account account){
         Connection connection = ConnectionUtil.getConnection();
         try{
-            String sql = "SELECT * FROM Account WHERE username = ?, password = ?;";
+            String sql = "SELECT * FROM Account WHERE username = ? AND password = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());

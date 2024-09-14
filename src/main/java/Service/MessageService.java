@@ -20,14 +20,14 @@ public class MessageService {
         return messageDAO.getAllMessages();
     }
     
-    public Message createNewMessage(Message message){ // <255char, not blank, posted by real acc
+    public boolean createNewMessage(Message message){ // <255char, not blank, posted by real acc
         if (message.getMessage_text().length() < 255 || message.getMessage_text().length() > 0) { //0<length<255
             //check real account
             //int tempAccID = message.getPosted_by(); //how to check real acc? link to accDAO?
             
             return messageDAO.createNewMessage(message); //run msg creation (success)
         }
-        return null;
+        return false;
     }
 
     public Message getMessageByID(int message_id){
@@ -38,8 +38,10 @@ public class MessageService {
         return messageDAO.deleteMessageByID(message_id);
     }
 
-    public Message updateMessageByID(Message message){
-        return messageDAO.updateMessageByID(message);
+    public Message updateMessageByID(int messID, String newMessageText){
+        Message tempMessage = messageDAO.getMessageByID(messID);
+        tempMessage.setMessage_text(newMessageText);
+        return messageDAO.updateMessageByID(tempMessage);
     }
 
     public List<Message> getAllMessagesByAccID(int accID){

@@ -22,7 +22,7 @@ public class AccountService {
         List<String> usernameList = accountDAO.getAllUsernames();
         for (String username : usernameList) {
             if (username == account.getUsername()){
-                return null; // account already exists
+                return null; // username already exists
             }
         }
         return accountDAO.registerAccount(account); //passed checks, register account

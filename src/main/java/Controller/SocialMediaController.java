@@ -23,23 +23,34 @@ public class SocialMediaController {
         AccountService accountService = new AccountService();
         MessageService messageService = new MessageService();
 
+        app.get("/", ctx -> ctx.result("Hello World"));
+        
         app.post("/register", ctx -> { //register account
-            String temp = ctx.body();
+            Account tempAcc = ctx.bodyAsClass(Account.class);
+            try{
+                Account newAcc = accountService.registerAccount(tempAcc);
+                ctx.json(newAcc);
+                ctx.status(200);
+            } catch (Exception e){
+                ctx.status(400);
+            }
+            
+            /*String temp = ctx.body();
             Account tempAcc = om.readValue(temp, Account.class);
-            tempAcc = accountService.registerAccount(tempAcc);
+            tempAcc.setAccount_id(accountService.registerAccount(tempAcc).getAccount_id());
             if (tempAcc == null){
                 ctx.status(400);
             }else{
             ctx.json(tempAcc);
             ctx.status(200);
-            }
+            }*/
         });
 
         app.post("/login", ctx -> { //login to account
             String temp = ctx.body();
             Account tempAcc = om.readValue(temp, Account.class);
-            tempAcc = accountService.accountLogin(tempAcc);
-            if (tempAcc == null){
+            Account newAcc = accountService.accountLogin(tempAcc);
+            if (newAcc == null){
                 ctx.status(401);
             } else{
                 ctx.json(tempAcc);
@@ -48,7 +59,14 @@ public class SocialMediaController {
         });
 
         app.post("/messages", ctx -> { //create a new message
-
+            String temp = ctx.body();
+            Message tempMessage = om.readValue(temp, Message.class);
+            if (messageService.createNewMessage(tempMessage) == false){
+                ctx.status(400);
+            } else {
+                ctx.json(tempMessage).status(200);
+                ctx.status(200);
+            }
         });
 
         app.get("/messages", ctx -> { //get all messages
@@ -67,7 +85,15 @@ public class SocialMediaController {
         });
 
         app.patch("/messages/{message_id}", ctx -> { //update message by message ID
-
+            int temp = Integer.parseInt(ctx.pathParam("message_id"));
+            String newText = ctx.body();
+            Message newMess= messageService.updateMessageByID(temp, newText);
+            if (newMess == null){
+                ctx.status(400);
+            } else {
+                ctx.json(newMess);
+                ctx.status(200);
+            }
         });
 
         app.get("/accounts/{account_id}/messages", ctx -> { //get messages by particular user
@@ -76,6 +102,7 @@ public class SocialMediaController {
 
         app.get("example-endpoint", this::exampleHandler);
 
+        
         return app;
     }
 
