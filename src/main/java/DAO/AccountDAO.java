@@ -22,6 +22,7 @@ public class AccountDAO {
             PreparedStatement p2 = connection.prepareStatement(sql2);
             p2.setString(1, account.getUsername());
             ResultSet rs = p2.executeQuery();
+            rs.next();
             account.setAccount_id(rs.getInt("account_id"));
             return account;
         }catch(SQLException e){
@@ -39,6 +40,7 @@ public class AccountDAO {
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
             ResultSet rs = preparedStatement.executeQuery();
+            rs.next();
             account.setAccount_id(rs.getInt("account_id"));
             return account;
 

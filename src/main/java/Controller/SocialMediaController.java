@@ -34,37 +34,25 @@ public class SocialMediaController {
             } catch (Exception e){
                 ctx.status(400);
             }
-            
-            /*String temp = ctx.body();
-            Account tempAcc = om.readValue(temp, Account.class);
-            tempAcc.setAccount_id(accountService.registerAccount(tempAcc).getAccount_id());
-            if (tempAcc == null){
-                ctx.status(400);
-            }else{
-            ctx.json(tempAcc);
-            ctx.status(200);
-            }*/
         });
 
         app.post("/login", ctx -> { //login to account
-            String temp = ctx.body();
-            Account tempAcc = om.readValue(temp, Account.class);
-            Account newAcc = accountService.accountLogin(tempAcc);
-            if (newAcc == null){
-                ctx.status(401);
-            } else{
-                ctx.json(tempAcc);
+            Account tempAcc = om.readValue(ctx.body(), Account.class);
+            try{
+                Account newAcc = accountService.accountLogin(tempAcc);
+                ctx.json(newAcc);
                 ctx.status(200);
+            } catch(Exception e){
+                ctx.status(401);
             }
         });
 
         app.post("/messages", ctx -> { //create a new message
-            String temp = ctx.body();
-            Message tempMessage = om.readValue(temp, Message.class);
+            Message tempMessage = om.readValue(ctx.body(), Message.class);
             if (messageService.createNewMessage(tempMessage) == false){
                 ctx.status(400);
             } else {
-                ctx.json(tempMessage).status(200);
+                ctx.json(tempMessage);
                 ctx.status(200);
             }
         });
@@ -75,9 +63,13 @@ public class SocialMediaController {
         });
 
         app.get("/messages/{message_id}", ctx -> { //get message by ID
-            int newNum = Integer.parseInt(ctx.pathParam("message_id"));
-            ctx.json(messageService.getMessageByID(newNum));
-            ctx.status(200);
+            try{
+                int newNum = Integer.parseInt(ctx.pathParam("message_id"));
+                ctx.status(200);
+                ctx.json(messageService.getMessageByID(newNum));
+            } catch(Exception e) {
+                ctx.status(200);
+            }
         });
 
         app.delete("/messages/{message_id}", ctx -> { //delete message by ID
@@ -88,12 +80,8 @@ public class SocialMediaController {
             int temp = Integer.parseInt(ctx.pathParam("message_id"));
             String newText = ctx.body();
             Message newMess= messageService.updateMessageByID(temp, newText);
-            if (newMess == null){
-                ctx.status(400);
-            } else {
-                ctx.json(newMess);
-                ctx.status(200);
-            }
+            ctx.json(newMess);
+            ctx.status(200);
         });
 
         app.get("/accounts/{account_id}/messages", ctx -> { //get messages by particular user

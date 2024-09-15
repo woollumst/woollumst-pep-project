@@ -57,6 +57,7 @@ public class MessageDAO {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, messID);
             ResultSet rs = ps.executeQuery();
+            rs.next();
             newMess = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
         }catch(SQLException e){
             System.out.println(e.getMessage());
@@ -91,6 +92,7 @@ public class MessageDAO {
             preparedStatement.setString(1, message.getMessage_text());
             preparedStatement.setInt(2, message.getMessage_id());
             ResultSet rs = preparedStatement.executeQuery();
+            rs.next();
             message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
             return message;
         } catch(SQLException e){

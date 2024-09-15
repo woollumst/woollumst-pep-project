@@ -29,14 +29,6 @@ public class AccountService {
     }
 
     public Account accountLogin(Account account){
-        List<Account> accounts = accountDAO.getAllAccounts();
-        for (Account tempAccount : accounts) {
-            if (tempAccount.getUsername() == account.getUsername()){ //check if username exists
-                if (tempAccount.getPassword() == account.getPassword()){ //check if password matches
-                    return accountDAO.accountLogin(account); // run login, recieve acc ID
-                }
-            }
-        }
-        return null;
+        return accountDAO.accountLogin(account);
     }
 }
