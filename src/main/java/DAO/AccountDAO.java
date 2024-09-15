@@ -65,6 +65,22 @@ public class AccountDAO {
         }
         return usernameList;
     }
+
+    public List<Integer> validateAccNum (int accNum){
+        Connection connection = ConnectionUtil.getConnection();
+        List<Integer> accNumList = new ArrayList<>();
+        try{
+            String sql = "SELECT acc_id FROM Account;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                accNumList.add(rs.getString("username"));
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return accNumList;
+    }
         
         
     public List<Account> getAllAccounts (){

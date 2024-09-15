@@ -31,4 +31,13 @@ public class AccountService {
     public Account accountLogin(Account account){
         return accountDAO.accountLogin(account);
     }
+
+    public boolean validateAccNum(int accNum){
+        List<Integer> accNumList = accountDAO.validateAccNum(accNum);
+        for (int accNums : accNumList){
+            if (accNum == accNums)
+                return true;
+        }
+        return false;
+    }
 }

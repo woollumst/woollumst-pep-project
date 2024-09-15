@@ -73,7 +73,14 @@ public class SocialMediaController {
         });
 
         app.delete("/messages/{message_id}", ctx -> { //delete message by ID
-
+            try{
+                int newNum = Integer.parseInt(ctx.pathParam("message_id"));
+                ctx.json(messageService.getMessageByID(newNum));
+                messageService.deleteMessageByID(newNum);
+                ctx.status(200);
+            } catch(Exception e){
+                ctx.status(200);
+            }
         });
 
         app.patch("/messages/{message_id}", ctx -> { //update message by message ID
