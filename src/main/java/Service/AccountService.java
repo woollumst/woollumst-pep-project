@@ -17,7 +17,7 @@ public class AccountService {
     }
 
     public Account registerAccount (Account account){
-        if (account.getUsername() == null || account.getPassword().length() < 4) 
+        if (account.getUsername().length() < 1 || account.getPassword().length() < 4) 
             return null; //username can't be blank, password > 4
         List<String> usernameList = accountDAO.getAllUsernames();
         for (String username : usernameList) {
