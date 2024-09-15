@@ -11,22 +11,28 @@ import java.util.List;
 
 public class MessageDAO {
     // create new message 
-    public boolean createNewMessage(Message message){
+    public Message createNewMessage(Message message){
         Connection connection = ConnectionUtil.getConnection();
+        Message createdMessage = null;
         try{
             String sql = "INSERT INTO Message (posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?);";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
             // set methods
             preparedStatement.setInt(1, message.getPosted_by());
             preparedStatement.setString(2, message.getMessage_text());
             preparedStatement.setLong(3, message.getTime_posted_epoch());
+            preparedStatement.execute();
 
-            return preparedStatement.execute();
+            String sql2 = "SELECT * FROM Message;";
+            PreparedStatement ps2 = connection.prepareStatement(sql2);
+            ResultSet rs = ps2.executeQuery();
+            rs.last();
+            createdMessage = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
+            return createdMessage;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return false;
+        return createdMessage;
     }
 
     // retrieve all messages 
@@ -36,7 +42,6 @@ public class MessageDAO {
         try {
             String sql = "SELECT * FROM Message;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
                 Message message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch")); //FINISH THIS LINE
@@ -91,20 +96,25 @@ public class MessageDAO {
     // Update message text by message ID
     public Message updateMessageByID(Message message){
         Connection connection = ConnectionUtil.getConnection();
+        Message newMessage = null;
         try{
             String sql = "UPDATE Message SET message_text = ? WHERE message_id = ?;";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, message.getMessage_text());
             preparedStatement.setInt(2, message.getMessage_id());
+            preparedStatement.execute();
+
+            sql = "SELECT * FROM Message WHERE message_id=?;";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,message.getMessage_id());
             ResultSet rs = preparedStatement.executeQuery();
             rs.next();
-            message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
-            return message;
+            newMessage = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
         } catch(SQLException e){
             System.out.println(e.getMessage());
         }
-        return null;
+        return newMessage;
     }
 
     // retrieve all messages by account ID

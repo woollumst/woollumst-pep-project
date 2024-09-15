@@ -70,11 +70,11 @@ public class AccountDAO {
         Connection connection = ConnectionUtil.getConnection();
         List<Integer> accNumList = new ArrayList<>();
         try{
-            String sql = "SELECT acc_id FROM Account;";
+            String sql = "SELECT account_id FROM Account;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
-                accNumList.add(rs.getString("username"));
+                accNumList.add(rs.getInt("account_id"));
             }
         } catch(SQLException e){
             System.out.println(e.getMessage());

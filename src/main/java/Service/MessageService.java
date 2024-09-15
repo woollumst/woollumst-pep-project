@@ -1,7 +1,7 @@
 package Service;
 
 import Model.Message;
-import DAO.MessageDAO;
+import DAO.*;
 
 import java.util.List;
 
@@ -20,14 +20,16 @@ public class MessageService {
         return messageDAO.getAllMessages();
     }
     
-    public boolean createNewMessage(Message message){ // <255char, not blank, posted by real acc
-        if (message.getMessage_text().length() < 255 || message.getMessage_text().length() > 0) { //0<length<255
+    public Message createNewMessage(Message message){ // <255char, not blank, posted by real acc
+        if ((message.getMessage_text().length() < 255) && (message.getMessage_text().length() > 0)) { //0<length<255
             //check real account
             // call acc validate method to check for real account
-            
-            return messageDAO.createNewMessage(message); //run msg creation (success)
+            AccountService accountService = new AccountService();
+            if (accountService.validateAccNum(message.getPosted_by())){
+                return messageDAO.createNewMessage(message); //run msg creation (success)
+            }
         }
-        return false;
+        return null; //msg creation failure
     }
 
     public Message getMessageByID(int message_id){
@@ -40,9 +42,14 @@ public class MessageService {
     }
 
     public Message updateMessageByID(int messID, String newMessageText){
-        Message tempMessage = messageDAO.getMessageByID(messID);
-        tempMessage.setMessage_text(newMessageText);
-        return messageDAO.updateMessageByID(tempMessage);
+        if (newMessageText.length() < 255 && newMessageText.length() > 0){
+            if (getMessageByID(messID) != null){
+                Message tempMessage = messageDAO.getMessageByID(messID);
+                tempMessage.setMessage_text(newMessageText);
+                return messageDAO.updateMessageByID(tempMessage);
+            }
+        }
+        return null;
     }
 
     public List<Message> getAllMessagesByAccID(int accID){

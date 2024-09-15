@@ -48,12 +48,13 @@ public class SocialMediaController {
         });
 
         app.post("/messages", ctx -> { //create a new message
-            Message tempMessage = om.readValue(ctx.body(), Message.class);
-            if (messageService.createNewMessage(tempMessage) == false){
-                ctx.status(400);
-            } else {
+            try{
+                Message tempMessage = om.readValue(ctx.body(), Message.class);
+                tempMessage = messageService.createNewMessage(tempMessage);
                 ctx.json(tempMessage);
                 ctx.status(200);
+            } catch (Exception e){
+                ctx.status(400);
             }
         });
 
@@ -84,15 +85,20 @@ public class SocialMediaController {
         });
 
         app.patch("/messages/{message_id}", ctx -> { //update message by message ID
-            int temp = Integer.parseInt(ctx.pathParam("message_id"));
-            String newText = ctx.body();
-            Message newMess= messageService.updateMessageByID(temp, newText);
-            ctx.json(newMess);
-            ctx.status(200);
+            try{
+                int temp = Integer.parseInt(ctx.pathParam("message_id"));
+                Message newMess= messageService.updateMessageByID(temp, textArray[1]);
+                ctx.json(newMess);
+                ctx.status(200);
+            } catch (Exception e){
+                ctx.status(400);
+            }
         });
 
         app.get("/accounts/{account_id}/messages", ctx -> { //get messages by particular user
-
+            int temp = Integer.parseInt(ctx.pathParam("account_id"));
+            ctx.json(messageService.getAllMessagesByAccID(temp));
+            ctx.status(200);
         });
 
         app.get("example-endpoint", this::exampleHandler);
