@@ -87,7 +87,7 @@ public class SocialMediaController {
         app.patch("/messages/{message_id}", ctx -> { //update message by message ID
             try{
                 int temp = Integer.parseInt(ctx.pathParam("message_id"));
-                Message newMess= messageService.updateMessageByID(temp, textArray[1]);
+                Message newMess= messageService.updateMessageByID(temp, ctx.body());
                 ctx.json(newMess);
                 ctx.status(200);
             } catch (Exception e){
